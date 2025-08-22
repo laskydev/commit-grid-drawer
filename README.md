@@ -151,4 +151,4 @@ If you need to change the configured Git user:
 
 ## 📄 License
 
-![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)
+![License](https://github.com/laskydev/commit-grid-drawer/blob/main/LICENSE)
