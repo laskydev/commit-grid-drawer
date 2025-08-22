@@ -134,6 +134,7 @@ Este error típicamente indica un problema con Git. Verifica:
 
 Si necesitas cambiar el usuario de Git configurado:
 
+
 1. Edita manualmente `~/.config/commit-grid-draw/config.yaml`
 2. Cambia `git_user` y `git_email`
 3. O ejecuta `./commit-grid init` para reconfigurar
