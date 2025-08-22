@@ -24,6 +24,9 @@ const plistTmpl = `<?xml version='1.0' encoding='UTF-8'?>
   <key>RunAtLoad</key><true/>
 </dict></plist>`
 
+// marcador único para identificar entradas de cron de esta app
+const cronMarker = "# COMMIT_GRID_DRAW"
+
 func Enable(binPath string, hour, minute int) error {
 	if util.IsLinux() {
 		return enableCron(binPath, hour, minute)
@@ -35,23 +38,31 @@ func Enable(binPath string, hour, minute int) error {
 }
 
 func Disable() error {
-	if util.IsLinux() { return disableCron() }
-	if util.IsMac()   { return disableLaunchd() }
+	if util.IsLinux() {
+		return disableCron()
+	}
+	if util.IsMac() {
+		return disableLaunchd()
+	}
 	return fmt.Errorf("OS no soportado")
 }
 
 func Status() (string, error) {
-	if util.IsLinux() { return cronStatus() }
-	if util.IsMac()   { return launchdStatus() }
+	if util.IsLinux() {
+		return cronStatus()
+	}
+	if util.IsMac() {
+		return launchdStatus()
+	}
 	return "", fmt.Errorf("OS no soportado")
 }
 
 // --- Linux: cron ---
 func enableCron(bin string, h, m int) error {
-	line := fmt.Sprintf("%d %d * * * %s run >> ~/.local/state/commit-grid-draw/commit-grid.log 2>&1", m, h, bin)
+	line := fmt.Sprintf("%d %d * * * %s run >> ~/.local/state/commit-grid-draw/commit-grid.log 2>&1 %s", m, h, bin, cronMarker)
 	// leer crontab actual
 	cur, _ := exec.Command("crontab", "-l").Output()
-	if bytes.Contains(cur, []byte("commit-grid run")) {
+	if bytes.Contains(cur, []byte(cronMarker)) {
 		// reemplazar
 		out := replaceCronLine(string(cur), line)
 		cmd := exec.Command("crontab", "-")
@@ -60,7 +71,9 @@ func enableCron(bin string, h, m int) error {
 	}
 	// agregar
 	buf := bytes.NewBuffer(cur)
-	if len(cur) > 0 && cur[len(cur)-1] != '\n' { buf.WriteByte('\n') }
+	if len(cur) > 0 && cur[len(cur)-1] != '\n' {
+		buf.WriteByte('\n')
+	}
 	buf.WriteString(line + "\n")
 	cmd := exec.Command("crontab", "-")
 	cmd.Stdin = buf
@@ -77,8 +90,12 @@ func disableCron() error {
 
 func cronStatus() (string, error) {
 	cur, err := exec.Command("crontab", "-l").Output()
-	if err != nil { return "sin crontab o error consultando", nil }
-	if bytes.Contains(cur, []byte("commit-grid run")) { return "habilitado (cron)", nil }
+	if err != nil {
+		return "sin crontab o error consultando", nil
+	}
+	if bytes.Contains(cur, []byte(cronMarker)) {
+		return "habilitado (cron)", nil
+	}
 	return "deshabilitado (cron)", nil
 }
 
@@ -89,8 +106,9 @@ func dropCronLines(cur string) string {
 	lines := bytes.Split([]byte(cur), []byte("\n"))
 	out := bytes.Buffer{}
 	for _, ln := range lines {
-		if !bytes.Contains(ln, []byte("commit-grid run")) && len(bytes.TrimSpace(ln)) > 0 {
-			out.Write(ln); out.WriteByte('\n')
+		if !bytes.Contains(ln, []byte(cronMarker)) && len(bytes.TrimSpace(ln)) > 0 {
+			out.Write(ln)
+			out.WriteByte('\n')
 		}
 	}
 	return out.String()
@@ -123,6 +141,8 @@ func disableLaunchd() error {
 
 func launchdStatus() (string, error) {
 	out, _ := exec.Command("launchctl", "list").Output()
-	if bytes.Contains(out, []byte("com.commitgrid.draw")) { return "habilitado (launchd)", nil }
+	if bytes.Contains(out, []byte("com.commitgrid.draw")) {
+		return "habilitado (launchd)", nil
+	}
 	return "deshabilitado (launchd)", nil
 }
