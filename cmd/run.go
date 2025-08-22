@@ -45,7 +45,7 @@ var runCmd = &cobra.Command{
 
 		// Ejecutar commits
 		for i := 1; i <= intensity; i++ {
-			msg := fmt.Sprintf("grid: %s (%d/%d)", time.Now().UTC().Format("2006-01-02"), i, intensity)
+			msg := fmt.Sprintf("grid: %s (%d/%d)", time.Now().UTC().Format("2006-01-02:15:04:05"), i, intensity)
 			fmt.Printf("🔄 Haciendo commit %d/%d: %s\n", i, intensity, msg)
 
 			if err := gitutil.CommitPush(c.RepoPath, c.GitUser, c.GitEmail, msg); err != nil {
