@@ -63,15 +63,15 @@ go build -o commit-grid .
 El archivo de configuración se guarda en `~/.config/commit-grid-draw/config.yaml`:
 
 ```yaml
-repo_path: "./drawing"                    # Ruta al repositorio Git
-git_user: "tu-usuario"                    # Nombre de usuario para Git
-git_email: "tu-email@example.com"        # Email para Git
-timezone: "America/Monterrey"             # Zona horaria (opcional)
-hour_24: 10                              # Hora de ejecución (0-23)
-minute: 0                                 # Minuto de ejecución (0-59)
-intensity_strategy: "fixed"               # Estrategia: fixed | random | pattern
-intensity_value: 1                        # Número de commits por día (para fixed)
-pattern_file: "data/pattern.csv"          # Archivo de patrón (para pattern)
+repo_path: "./drawing" # Ruta al repositorio Git
+git_user: "tu-usuario" # Nombre de usuario para Git
+git_email: "tu-email@example.com" # Email para Git
+timezone: "America/Monterrey" # Zona horaria (opcional)
+hour_24: 10 # Hora de ejecución (0-23)
+minute: 0 # Minuto de ejecución (0-59)
+intensity_strategy: "fixed" # Estrategia: fixed | random | pattern
+intensity_value: 1 # Número de commits por día (para fixed)
+pattern_file: "data/pattern.csv" # Archivo de patrón (para pattern)
 ```
 
 ## 🧱 Stack Tecnológico
@@ -88,11 +88,13 @@ pattern_file: "data/pattern.csv"          # Archivo de patrón (para pattern)
 ## 🕒 Programación
 
 ### Linux (cron)
+
 ```bash
 0 10 * * * /ruta/al/binario/commit-grid run >> ~/.local/state/commit-grid-draw/commit-grid.log 2>&1
 ```
 
 ### macOS (launchd)
+
 El archivo se crea automáticamente en `~/Library/LaunchAgents/com.commitgrid.draw.plist`
 
 ## 🤖 Cómo Funciona
@@ -120,6 +122,7 @@ El archivo se crea automáticamente en `~/Library/LaunchAgents/com.commitgrid.dr
 ## ⚠️ Solución de Problemas
 
 ### Error "exit status 128"
+
 Este error típicamente indica un problema con Git. Verifica:
 
 1. **El repositorio existe** y es válido
@@ -128,6 +131,7 @@ Este error típicamente indica un problema con Git. Verifica:
 4. **Tu autenticación Git** está funcionando
 
 ### Cambiar usuario de Git
+
 Si necesitas cambiar el usuario de Git configurado:
 
 1. Edita manualmente `~/.config/commit-grid-draw/config.yaml`
