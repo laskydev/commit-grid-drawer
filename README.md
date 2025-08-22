@@ -1,155 +1,154 @@
 # Commit Grid Drawer 🎨📊
 
-Commit Grid Drawer es una herramienta CLI multiplataforma que automatiza commits diarios a GitHub para "dibujar" patrones personalizados en tu gráfico de contribuciones.
-Proporciona una experiencia de onboarding moderna con TUI, programación flexible y múltiples estrategias para la intensidad de commits.
+Commit Grid Drawer is a cross-platform CLI tool that automates daily commits to GitHub to "draw" custom patterns on your contribution graph.
+It provides a modern TUI onboarding experience, flexible scheduling, and multiple strategies for commit intensity.
 
-## ✨ Características
+## ✨ Features
 
-- **Commits automáticos diarios** a tu repositorio GitHub
-- **Soporte para dibujar patrones** (fijo, aleatorio o basado en CSV)
-- **Onboarding interactivo (TUI)** para configurar repo, usuario, zona horaria y programación
-- **Programación multiplataforma**:
+- **Daily automated commits** to your GitHub repository
+- **Pattern drawing support** (fixed, random, or CSV-based)
+- **Interactive onboarding (TUI)** to configure repo, user, timezone, and schedule
+- **Cross-platform scheduling**:
   - Linux → cron
   - macOS → launchd
-- **Intensidad configurable** (# de commits por día)
-- **Ligero** (binario Go, sin daemons, inicio instantáneo)
-- **CLI amigable** con UX moderna (stack Charmbracelet)
+- **Configurable intensity** (# of commits per day)
+- **Lightweight** (Go binary, no daemons, instant startup)
+- **User-friendly CLI** with modern UX (Charmbracelet stack)
 
-## 🚀 Inicio Rápido
+## 🚀 Quick Start
 
-### 1) Clonar y construir
+### 1) Clone and build
 
 ```bash
-# Clonar el repositorio
+# Clone the repository
 git clone https://github.com/laskydev/commit-grid-drawer.git
 cd commit-grid-drawer
 
-# Construir el binario
+# Build the binary
 go build -o commit-grid .
 ```
 
-### 2) Ejecutar onboarding
+### 2) Run onboarding
 
 ```bash
 ./commit-grid init
 ```
 
-### 3) Activar el programador
+### 3) Enable scheduler
 
 ```bash
 ./commit-grid enable
 ```
 
-### 4) Verificar estado
+### 4) Check status
 
 ```bash
 ./commit-grid status
 ```
 
-### 5) Probar manualmente
+### 5) Test manually
 
 ```bash
 ./commit-grid run
 ```
 
-### 6) Ver configuración
+### 6) View configuration
 
 ```bash
 ./commit-grid config get
 ```
 
-## ⚙️ Configuración
+## ⚙️ Configuration
 
-El archivo de configuración se guarda en `~/.config/commit-grid-draw/config.yaml`:
+The configuration file is saved in `~/.config/commit-grid-draw/config.yaml`:
 
 ```yaml
-repo_path: "./drawing" # Ruta al repositorio Git
-git_user: "tu-usuario" # Nombre de usuario para Git
-git_email: "tu-email@example.com" # Email para Git
-timezone: "America/Monterrey" # Zona horaria (opcional)
-hour_24: 10 # Hora de ejecución (0-23)
-minute: 0 # Minuto de ejecución (0-59)
-intensity_strategy: "fixed" # Estrategia: fixed | random | pattern
-intensity_value: 1 # Número de commits por día (para fixed)
-pattern_file: "data/pattern.csv" # Archivo de patrón (para pattern)
+repo_path: "./drawing" # Path to Git repository
+git_user: "your-username" # Git username
+git_email: "your-email@example.com" # Git email
+timezone: "America/Monterrey" # Timezone (optional)
+hour_24: 10 # Execution hour (0-23)
+minute: 0 # Execution minute (0-59)
+intensity_strategy: "fixed" # Strategy: fixed | random | pattern
+intensity_value: 1 # Number of commits per day (for fixed)
+pattern_file: "data/pattern.csv" # Pattern file (for pattern)
 ```
 
-## 🧱 Stack Tecnológico
+## 🧱 Tech Stack
 
-- **Lenguaje**: Go 1.22+
+- **Language**: Go 1.22+
 - **CLI**: spf13/cobra
 - **TUI**: bubbletea, bubbles, lipgloss, glamour, huh
-- **Configuración**: YAML en `~/.config/commit-grid-draw/config.yaml`
-- **Programador**: cron (Linux), launchd (macOS)
+- **Configuration**: YAML in `~/.config/commit-grid-draw/config.yaml`
+- **Scheduler**: cron (Linux), launchd (macOS)
 - **Logs**:
   - Linux → `~/.local/state/commit-grid-draw/commit-grid.log`
   - macOS → `~/Library/Logs/commit-grid.log`
 
-## 🕒 Programación
+## 🕒 Scheduling
 
 ### Linux (cron)
 
 ```bash
-0 10 * * * /ruta/al/binario/commit-grid run >> ~/.local/state/commit-grid-draw/commit-grid.log 2>&1
+0 10 * * * /path/to/binary/commit-grid run >> ~/.local/state/commit-grid-draw/commit-grid.log 2>&1
 ```
 
 ### macOS (launchd)
 
-El archivo se crea automáticamente en `~/Library/LaunchAgents/com.commitgrid.draw.plist`
+The file is automatically created in `~/Library/LaunchAgents/com.commitgrid.draw.plist`
 
-## 🤖 Cómo Funciona
+## 🤖 How It Works
 
-1. **Carga** la configuración del usuario y zona horaria
-2. **Determina** la intensidad del día (número de commits)
-3. **Asegura** que el repo esté limpio
-4. **Actualiza** `data/grid.csv` con la entrada de hoy
-5. **Hace N commits** con mensajes como:
+1. **Loads** user configuration and timezone
+2. **Determines** today's intensity (number of commits)
+3. **Ensures** the repo is clean
+4. **Updates** `data/grid.csv` with today's entry
+5. **Makes N commits** with messages like:
    ```
    grid: 2025-08-21 (1/3)
    ```
-6. **Hace push** de los commits al remoto, actualizando tu gráfico de contribuciones
+6. **Pushes** commits to remote, updating your contribution graph
 
-## 📋 Comandos Disponibles
+## 📋 Available Commands
 
-- `commit-grid init` - Asistente interactivo de configuración
-- `commit-grid enable` - Activa el programador diario
-- `commit-grid disable` - Desactiva el programador diario
-- `commit-grid status` - Muestra el estado del programador
-- `commit-grid run` - Ejecuta la tarea del día manualmente
-- `commit-grid config get` - Lee la configuración actual
-- `commit-grid completion` - Genera script de autocompletado
+- `commit-grid init` - Interactive configuration wizard
+- `commit-grid enable` - Enables daily scheduler
+- `commit-grid disable` - Disables daily scheduler
+- `commit-grid status` - Shows scheduler status
+- `commit-grid run` - Manually executes daily task
+- `commit-grid config get` - Reads current configuration
+- `commit-grid completion` - Generates autocompletion script
 
-## ⚠️ Solución de Problemas
+## ⚠️ Troubleshooting
 
 ### Error "exit status 128"
 
-Este error típicamente indica un problema con Git. Verifica:
+This error typically indicates a Git problem. Check:
 
-1. **El repositorio existe** y es válido
-2. **Tienes permisos** para hacer push al remoto
-3. **El remoto está configurado** correctamente
-4. **Tu autenticación Git** está funcionando
+1. **The repository exists** and is valid
+2. **You have permissions** to push to remote
+3. **The remote is configured** correctly
+4. **Your Git authentication** is working
 
-### Cambiar usuario de Git
+### Change Git user
 
-Si necesitas cambiar el usuario de Git configurado:
+If you need to change the configured Git user:
 
+1. Manually edit `~/.config/commit-grid-draw/config.yaml`
+2. Change `git_user` and `git_email`
+3. Or run `./commit-grid init` to reconfigure
 
-1. Edita manualmente `~/.config/commit-grid-draw/config.yaml`
-2. Cambia `git_user` y `git_email`
-3. O ejecuta `./commit-grid init` para reconfigurar
+## 🧪 Quality Notes
 
-## 🧪 Notas de Calidad
+- **Idempotent**: enabling replaces previous cron/launchd entries
+- **Safe**: only commits within your chosen repo
+- **Portable**: static Go binary, no CGO
+- **Logs**: all activity is recorded for debugging
 
-- **Idempotente**: habilitar reemplaza entradas previas de cron/launchd
-- **Seguro**: solo hace commits dentro del repo elegido
-- **Portable**: binario Go estático, sin CGO
-- **Logs**: toda la actividad queda registrada para debugging
+## 📌 Disclaimer
 
-## 📌 Descargo de Responsabilidad
+⚠️ **High-intensity strategies generate multiple commits per day and may be considered spam.** Use them responsibly to keep your graph fun and meaningful.
 
-⚠️ **Las estrategias de alta intensidad generan múltiples commits por día y pueden considerarse spam.** Úsalas responsablemente para mantener tu gráfico divertido y significativo.
-
-## 📄 Licencia
+## 📄 License
 
 ![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)
