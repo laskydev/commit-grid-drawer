@@ -23,6 +23,25 @@ func ValidateRepo(repo string) error {
 		return fmt.Errorf("error al hacer fetch del repositorio remoto: %w", err)
 	}
 
+	// Verificar si el branch actual tiene upstream configurado
+	if err := run(repo, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"); err != nil {
+		// No hay upstream configurado, configurarlo automáticamente
+		fmt.Println("⚠️  El branch actual no tiene upstream configurado. Configurando automáticamente...")
+		
+		// Obtener el nombre del branch actual
+		branchOutput, err := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD").CombinedOutput()
+		if err != nil {
+			return fmt.Errorf("error al obtener el nombre del branch actual: %w", err)
+		}
+		branchName := strings.TrimSpace(string(branchOutput))
+		
+		// Configurar el upstream
+		if err := run(repo, "push", "--set-upstream", "origin", branchName); err != nil {
+			return fmt.Errorf("error al configurar upstream para el branch %s: %w", branchName, err)
+		}
+		fmt.Printf("✅ Upstream configurado para el branch %s\n", branchName)
+	}
+
 	return nil
 }
 
